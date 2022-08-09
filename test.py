@@ -2,37 +2,22 @@ from model.board import Board
 from controllor.game_controller import GameController
 from view.board_console_view import BoardConsoleView
 from view.game_console_view import GameConsoleView
-from model.players import Players
+from model.players import HumanPlayer, AiPlayer
 from model.reversi_game import ReversiGame
 
-#TESTING----
-# newBoard = Board(8)
 
-# for row in newBoard.board: 
-#     print(row)
+size = int(input('Please enter the size nxn preference for your board: '))
+choice = input(f'Please select your choice:\n 1) for player vs player \n 2) for player vs simple ai \n 3) for player vs complex ai \n type number here:')
 
-# # tup = newBoard.convert_to_tup('D4')
-# # print(tup)
-
-# print(newBoard.get_item(3,3))
-
-# console_view = BoardConsoleView(newBoard)
-# console_view.draw_board()
-
-# txt2 = "My name is {0}, I'm {1}".format("John",36)
-# print(txt2)
+if choice == '1': 
+    game = ReversiGame(size, HumanPlayer.X, HumanPlayer.O)
+elif choice == '2': 
+    game = ReversiGame(size, HumanPlayer.X, AiPlayer.O)
+elif choice == '3': 
+    game = ReversiGame(size)
 
 
-
-new_board2 = Board(4)
-
-game = ReversiGame(4)
-board_view = BoardConsoleView(new_board2)
-#board_view = 
-
-game_view = GameConsoleView(game, board_view)
-#game_view = GameConsoleView(game, Board_view(game.board))
-
+game_view = GameConsoleView(game, BoardConsoleView(game.board))
 my_controller = GameController(game, game_view) #this should start the game 
 
 

@@ -36,6 +36,11 @@ class GameConsoleView(GameView):
 
 
     def draw_board(self):
+        """_summary_ WILL DRAW BOARD FOR EACH TURN, RETURNS FALSE if the game is over
+
+        Returns:
+            BOOL: game_over_bool if the game is over when the board is being drawn
+        """
         self.board_view.draw_board()
 
         #makes a dict storing x's count in [1] , o's count in [2]
@@ -47,6 +52,8 @@ class GameConsoleView(GameView):
             o_score = num_disks['O']
             o_str = f'O score: {o_score}'
             print(x_str + o_str)
+        else: 
+            return True
 
             # for key, value in items: 
             #     if key == 'X': 
@@ -63,8 +70,21 @@ class GameConsoleView(GameView):
 
 
     def display_winner(self):
-        # print(self.game.check_winner(f'{self.GAME_COUNT}.txt', "WIN!!!"))
-        # self.GAME_COUNT += 1
+        num_disks = self.game.board.count_tiles()
+        x_score = num_disks['X']
+        x_str = f'X score: {x_score}, '
+        o_score = num_disks['O']
+        o_str = f'O score: {o_score}'
+        
+        if x_score > o_score: 
+            win_str = f'Congrats, X -- Player X: {x_score} Player O: {o_score}'
+        elif x_score < o_score:
+            win_str = f'Congrats, O -- Player X: {x_score} Player O: {o_score}'
+        else: 
+             win_str = f'Its a tie! -- Player X: {x_score} Player O: {o_score}'
+        print(win_str)
+
+
         pass
     
     def wrong_cell(self):
@@ -74,6 +94,4 @@ class GameConsoleView(GameView):
         print("Invalid move, try again")
 
 
-    def display_winner(self):
-        #print(self.game.check_winner(f'{self.GAME_COUNT}.txt', now), "WIN!!!")
-        pass
+

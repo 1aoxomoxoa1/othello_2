@@ -1,6 +1,5 @@
 from model.players import Players
 
-
 class Board:
     EMPTY_CELL = '' 
 
@@ -75,31 +74,9 @@ class Board:
         return row >= 0 and row <= self.size - 1 and col >= 0 and col <= self.size - 1
 
 
-    #-------TO DELETE----------
-    # def is_valid_move(self, action, color): 
-    #     """Will return TRUE if player can move to place (xstart, ystart)
-    #     If it is valid move, returns list of spaces that would become players if they move there
-    #     Args:
-    #         action: {str} desired move location
-    #         color: {intenum} color of player who is moving
-    #     """
-
-    #     if isinstance(action, str): #action
-    #         action = self.convert_to_tup(action) #convert string to tup
-        
-    #     xstart, ystart = action #get indices from tupp.
-
-    #     if self.board[xstart][ystart] != '' or not self.is_valid_location(xstart, ystart): #if choice isnt valid on board or open
-    #         return False
-
-    #     #put color in selected move temporarily
-    #     self.board[xstart][ystart] = color
-
-    #     #set opponent color
-    #     op_color = 'O' if color == 'X' else 'X'
 
     def count_tiles(self): 
-        """ same func as num_disks()
+        """ Will count the tiles for each player and return a dict {'X': count , 'O': count}
         """
         tiles = {}  # key = player symbol, value = disks number
 
@@ -127,41 +104,5 @@ class Board:
                 return False
         return True
 
-
-
-
-
-
-
-
-
-    # def get_legal_actions(self, player): 
-    #     """
-    #     Legal moves to obtain pieces according to the rules of Othello
-    #     :param color: different colored pieces, X-black, O-white
-    #     :return: Generate legal move coordinates, use list() method to get all legal coordinates
-    #     """
-    #     # Indicates the 8 different direction coordinates of the chessboard coordinate point, for example, the direction coordinate [0][1] means directly above the coordinate point.
-    #     direction = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
-
-    #     op_color = "O" if player == 'X' else 'X'
-    #     # Count the positions of the unsettled states adjacent to the op_color side
-    #     op_color_near_points = []
-
-    #     board = self._board
-    #     for i in range(8):
-    #         for j in range(8):
-    #             if board[i][j] == op_color:
-    #                 for dx, dy in direction:
-    #                     x, y = i + dx, j + dy
-    #                     if 0 <= x <= 7 and 0 <= y <= 7 and board[x][y] == self.empty and (
-    #                             x, y) not in op_color_near_points:
-    #                         op_color_near_points.append((x, y))
-    #     l = [0, 1, 2, 3, 4, 5, 6, 7]
-    #     for p in op_color_near_points:
-    #         if self._can_fliped(p, player):
-    #             if p[0] in l and p[1] in l:
-    #                 p = self.num_board(p)
-    #             yield p        
 
 

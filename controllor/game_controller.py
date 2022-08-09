@@ -1,6 +1,6 @@
 from re import X
 from model.reversi_game import ReversiGame
-from model.players import Players
+from model.players import AiPlayer, HumanPlayer
 from view.board_console_view import BoardConsoleView
 from view.game_console_view import GameConsoleView
 from model.invalid_move_error import InvalidMoveError
@@ -10,27 +10,6 @@ class GameController:
         self.model = model
         self.view = view
 
-        #think -- game contorller has consoleview: but wait -- something must set up the ConsoleView which contains everything
-        #leave as things that i pass in
-        # OR: 
-        #initialize objects as they are created 
-
-        #in this case: 
-        #ReversiGame is factory objcet, creates the objects and then the GameController runs 
-
-
-# ------General Idea of Run---------
-    # def run(self): 
-    #     Loop 
-    #         which Players
-    #         if len(legal_actions == 0): 
-    #             if self.game_over(): 
-    #                 winner, score diff = self.board.get_winner
-    #                 break
-    #             else
-    #                 continue
-        
-    #         action = view.get_move() 
 
     def run(self): 
         
@@ -40,37 +19,56 @@ class GameController:
             game_console_view = GameConsoleView(self.model, board_view)
 
             self.model.change_player() #first player is set
-            game_console_view.draw_board() #board is drawn
-            game_console_view.describe_turn() #turn is described, given layer
+            self.view.draw_board() #board is drawn
+            self.view.describe_turn() #turn is described, given layer
 
 
             while not self.model.is_terminated(): #while game not terminated 
                 
 
                 try: 
-                    action = game_console_view.get_player_action()
-                    if action != 'pass': 
+                    
+                    if self.model.exist_valid_moves(): #if player has valid moves
+
+                        if isinstance(self.model.curr_player, HumanPlayer): 
+                            action = self.view.get_player_action()
+                        elif isinstance(self.model.curr_player, AiPlayer): 
+                            action = self.model.get_simple_ai_move() 
+
+                    else: #if player has no valid moves
+                        print("No valid move, passed")
+                        action = 'pass' #assign action to 'pass' 
+                        
+                    if action != 'pass': #if action is not to pass
+                        
                         row, col = action[0], action[1]
-                        print(row, col)
 
-                        if not self.model.is_valid_move(row, col): #if move is valid
-                            raise InvalidMoveError
-                        else:
+                        if self.model.is_valid_move(row, col): #if move is a valid move 
+                        
+                            row, col = action[0], action[1]
+                            print(row, col)
+
                             self.model.make_move(row, col)
-                            game_console_view.draw_board()
-                    else: #if 'pass', change player
-                        pass
+                            game_over_bool = self.view.draw_board()  #game_over_bool will turn true if the game is over
 
-                    self.model.change_player()
-                    game_console_view.describe_turn()
+                        else: #if it is an invalid move
+                            raise InvalidMoveError
+
+                    else: #if 'pass', just draw board
+                            pass
+
+                    if game_over_bool: #if game is over
+                        break #break from looop
+                    else: 
+                        self.model.change_player()
+                        self.view.describe_turn()
 
                 except InvalidMoveError:
                     print("Sorry, invalid move")
                     continue
 
-
-                # print(row, col)
-                # print(self.model.board.get_item((4,3)))
+        
+            self.game_over()
                 
                  
 
@@ -90,6 +88,9 @@ class GameController:
 
 
     def game_over(self): 
-        pass
+        self.view.display_winner()
+        self.model.write_to_file()
+
+        # file --{Date and time of the game} {which player won (X/O) or a draw} {the score of each player}
     
 
