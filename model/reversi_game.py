@@ -366,11 +366,11 @@ class ReversiGame:
         o_score = num_disks['O']
         o_str = f'O score: {o_score}'
         
-        if x_score > o_score: 
+        if x_score > o_score: #if x's score is greater
             win_str = f'Congrats, Player X Wins -- Player X: {x_score} Player O: {o_score}'
-        elif x_score < o_score:
+        elif x_score < o_score: #if o's is greater
             win_str = f'Congrats, Player O Wins -- Player X: {x_score} Player O: {o_score}'
-        else: 
+        else: #if it is a tie
              win_str = f'Its a tie! -- Player X: {x_score} Player O: {o_score}'
 
         now = datetime.datetime.now()

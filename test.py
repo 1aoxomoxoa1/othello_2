@@ -1,3 +1,4 @@
+from cgi import test
 from model.board import Board
 from controllor.game_controller import GameController
 from view.board_console_view import BoardConsoleView

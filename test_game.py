@@ -11,20 +11,18 @@ class TestAi(unittest.TestCase):
         """
         my_game = ReversiGame(4, HumanPlayer.X, AiPlayer.O, 2)
         my_game.curr_player = AiPlayer.O
-        expected_moves = my_game.get_valid_moves() 
-        
+        expected_moves = my_game.get_valid_moves()         
         self.assertTrue(my_game.get_simple_ai_move() in expected_moves) #simple ai should be in lst of valid_moves
 
 
-    def test_simple_ai_pick_best_move(self): 
-        """if call this test test_ai_picks_valid_move() 
+    def test_complex_ai(self): 
+        """will test to see if the complex_ai picks from one of the valid moves
         """
-        my_game = ReversiGame(4, HumanPlayer.X, AiPlayer.O, 2)
+        my_game = ReversiGame(4, HumanPlayer.X, AiPlayer.O, 5) #set depth to 5
+        my_game.max_depth = 5 #need to set a variable in object same to depth we have
         my_game.curr_player = AiPlayer.O
-        expected_moves = my_game.get_best_moves() 
-        #[(0,2), (2,0), (1,3), (3,2)]
-
-        self.assertTrue(my_game.get_simple_ai_move() in expected_moves) #should be on of lst of moves
+        expected_moves = my_game.get_valid_moves()
+        self.assertTrue(my_game.minimax() in expected_moves) #test succeeds if move returned from minimax is in expected_moves
 
 
 
