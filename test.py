@@ -7,14 +7,15 @@ from model.reversi_game import ReversiGame
 
 
 size = int(input('Please enter the size nxn preference for your board: '))
-choice = input(f'Please select your choice:\n 1) for player vs player \n 2) for player vs simple ai \n 3) for player vs complex ai \n type number here:')
+choice = int(input(f'Please select your choice:\n 1) for player vs player \n 2) for player vs simple ai \n 3) for player vs complex ai \n type number here:'))
 
-if choice == '1': 
-    game = ReversiGame(size, HumanPlayer.X, HumanPlayer.O)
-elif choice == '2': 
-    game = ReversiGame(size, HumanPlayer.X, AiPlayer.O)
-elif choice == '3': 
-    game = ReversiGame(size)
+if choice == 1: 
+    game = ReversiGame(size, HumanPlayer.X, HumanPlayer.O, choice)
+elif choice == 2: 
+    game = ReversiGame(size, HumanPlayer.X, AiPlayer.O, choice)
+elif choice == 3: 
+    depth = int(input("Please enter the depth (amnount to lookahead) for complex AI: "))
+    game = ReversiGame(size, HumanPlayer.X, AiPlayer.O, choice, depth)
 
 
 game_view = GameConsoleView(game, BoardConsoleView(game.board))

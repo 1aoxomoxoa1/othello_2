@@ -33,7 +33,10 @@ class GameController:
                         if isinstance(self.model.curr_player, HumanPlayer): 
                             action = self.view.get_player_action()
                         elif isinstance(self.model.curr_player, AiPlayer): 
-                            action = self.model.get_simple_ai_move() 
+                            if self.model.choice == 2: 
+                                action = self.model.get_simple_ai_move() 
+                            elif self.model.choice == 3: 
+                                action = self.model.minimax(self.model.max_depth) #pass depth from input into func
 
                     else: #if player has no valid moves
                         print("No valid move, passed")

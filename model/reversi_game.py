@@ -1,3 +1,4 @@
+from cmath import inf
 from model.board import Board
 from model.players import Players
 from model.reversi_user import ReversiUser
@@ -13,16 +14,25 @@ class ReversiGame:
     OTHER_PLAYER = 3
 
 
-    def __init__(self, size, player_1, player_2):
+    def __init__(self, size, player_1, player_2, choice, max_depth = 0):
+        """constructor for the game
+
+        Args:
+            size (_int_): describing the size of the board size = n for (n x n) board
+            player_1 (Player): _description_ 
+            player_2 (Player): _description_
+            choice (_int_): choice of which game style -- ()=1: pvp) (=2: player vs simple ai) (=3: player vs complex ai)
+        """
         board_size = size
 
         self.board = Board(size)
         self.player_x = player_1
         self.player_o = player_2
         
-
         #X goes first
         self.curr_player = ''
+        self.choice = choice
+        self.max_depth = max_depth 
    
 
     def change_player(self):
@@ -112,6 +122,82 @@ class ReversiGame:
         return moves_lst
 
 
+    def minimax(self, depth=5, is_start_player=True):
+        """this function will return an int that is the highest score looking 5 turns ahead, 
+
+        Args:
+            depth (int, optional): how many moves ahead in the binary tree you want to search [[Defaults to 5]]
+            is_start_player (bool, optional): True means we are maximizing for start player; False means minizimizing for opponent Defaults to True.
+
+        Returns:
+            int: maximizing score for lookahead
+        """
+        #returns at end of tree; base
+        if depth == 0 or self.is_terminated() == True: 
+            self.curr_player = self.player_o #we want to evaluate score from context of O 
+            return self.get_score_of_current_board() #static evaluation of position
+        
+        #if evaluating next move , recursing , for the starting player
+        copy_game = copy.deepcopy(self) #copy of game we start recursion with (self is the game w/in the recursive frame)
+
+        if is_start_player: #is_player -- RENAME
+
+            maximum_score_of_subtrees = float(-inf) #initialize max_score at -inf
+            copy_game.curr_player = copy_game.player_o #make sure its set to ai player
+            valid_moves = copy_game.get_valid_moves() #gets the valid moves at game state
+
+            
+            for move in valid_moves: 
+                copy_game.make_move(move[0], move[1]) #changes game state (curr_player changes) & changes copy_of_board state
+                child_score = copy_game.minimax(depth-1, False) #the next time through the for loop, compare sub_tre
+
+                if child_score > maximum_score_of_subtrees: 
+                    best_move = move 
+                elif child_score == maximum_score_of_subtrees: 
+                    random_num = random.randint(0,1)
+                    if random_num == 1: 
+                        best_move = move   
+
+                copy_game = copy.deepcopy(self)
+                copy_game.curr_player = copy_game.player_o #reset to player o        
+
+                maximum_score_of_subtrees = max(maximum_score_of_subtrees, child_score)
+            
+            if depth == self.max_depth: #testing to see how we can get the move for the final recursion  
+                return move #THIS WILL ONLY RETURN MOVE AT END OF BACKTRACKING
+
+            return maximum_score_of_subtrees #once you go through all the valid_moves at bottom of subtree (depth = 1)
+            
+            #keep track of best move here, put "child_score, _" (max_score_of_subtrees, associated_move)
+            
+
+        #if evaluating next move for NON-starting player, for X if O is the AI 
+        else: 
+            minimum_score_of_subtrees = float(inf)
+            copy_game.curr_player = copy_game.player_x #set to player X here in minimizing
+            valid_moves = copy_game.get_valid_moves()
+            for move in valid_moves:
+                copy_game.make_move(move[0], move[1])
+                child_score = copy_game.minimax(depth-1, True) 
+
+                if child_score < minimum_score_of_subtrees: 
+                    best_move = move 
+                elif child_score == minimum_score_of_subtrees: 
+                    random_num = random.randint(0,1)
+                    if random_num == 1: 
+                        best_move = move       
+                        
+                copy_game = copy.deepcopy(self) #reinitialize the copy of game 
+                copy_game.curr_player = copy_game.player_x #reset player
+                minimum_score_of_subtrees = min(minimum_score_of_subtrees, child_score)
+
+            if depth == self.max_depth: #testing to see how we can get the move for the final recursion  
+                return move #THIS WILL ONLY RETURN MOVE AT END OF BACKTRACKING
+
+            return minimum_score_of_subtrees
+
+
+
     def get_simple_ai_move(self):
         """this function will get the best moves for a given game state that the ai will player
         Args:
@@ -142,6 +228,26 @@ class ReversiGame:
 
         return best_moves[idx]
 
+    def get_score_of_current_board(self): 
+        """this function will return the score of the CURRENT board without making changes or a move
+
+        Returns:
+            _int_: score --- the (ai_score - player_score) for a given board's game state
+        """
+
+        #current player should be the ai 
+        if self.curr_player == self.player_x:
+            ai_marker = 'X'
+            player_marker = 'O'
+        elif self.curr_player == self.player_o: 
+            ai_marker = 'O'
+            player_marker = 'X'
+
+        tiles = self.board.count_tiles() 
+        ai_score = tiles[ai_marker]
+        player_score = tiles[player_marker]
+
+        return ai_score - player_score
 
 
     def get_score(self, move):
