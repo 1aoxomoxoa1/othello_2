@@ -50,18 +50,6 @@ class Board:
             return x, y 
 
 
-    def update_location(self, row, col, player):
-        """Updates board location
-        
-        Args:
-            row(list): row index of board matrix
-            col(list): column index of board matrix
-            player(Players): the current player -- either 'X' or 'O'
-        """
-        if player == Players.WHITE_PLAYER:
-            self.board[row][col] = 'X'
-        else: 
-            self.board[row][col] = 'O'
 
 
     def is_valid_location(self, row, col):

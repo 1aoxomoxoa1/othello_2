@@ -5,7 +5,6 @@ class BoardConsoleView(BoardView):
     """Represents board view in console
     """
     
-    #symbols = {0: " ", 1: "X", 2: "O"}
     
     def __init__(self, board: Board) -> None:
         super().__init__(board)
